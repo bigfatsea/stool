@@ -1,0 +1,14 @@
+from misc_utils import *
+from logging_utils import *
+from date_utils import *
+
+# Your main script logic using the functions from the imported modules
+if __name__ == '__main__':
+    print_cmd()
+    xxx = logging.getLogger('xxx')
+    xxx.error('This is a message from the xxx.')
+    logger1 = get_colored_logger('worker')
+
+    logger = get_colored_logger('worker')
+
+    logger1.info('logger1')
