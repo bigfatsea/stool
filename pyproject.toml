@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "stool"
 version = "0.1.0"
-description = ""
+description = "Stanford's Tools"
 authors = ["Stanford <bigfatsea@gmail.com>"]
 readme = "README.md"
 
