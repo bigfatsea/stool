@@ -11,6 +11,15 @@ from datetime import datetime, timedelta
 from dateutil.relativedelta import relativedelta
 
 
+def expand_config_file(file):
+    code_file_dir = os.path.dirname(os.path.abspath(__file__))
+    return os.path.join(code_file_dir, file)
+
+
+def expand_dir(dir):
+    return os.path.expanduser(dir) if dir.startswith('~') else os.path.abspath(dir)
+
+
 def send_msg(message, title=None):
     title = title or f"{os.path.basename(sys.argv[0])} {' '.join(sys.argv[1:])}"
     url = f"https://api.day.app/vFVZRfhJbEsiT9XndGYpf5/{title}/{message}"
