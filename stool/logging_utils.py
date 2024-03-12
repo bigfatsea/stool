@@ -4,9 +4,11 @@ import colorlog
 import time
 import os
 import sys
+from colorama import Fore
 
 # Thread-specific colors
-_THREAD_COLORS = [34, 36, 32, 33, 31, 35]
+# _THREAD_COLORS = [34, 36, 32, 33, 31, 35]
+_THREAD_COLORS = [Fore.BLUE, Fore.CYAN, Fore.GREEN, Fore.YELLOW, Fore.RED, Fore.MAGENTA]
 
 # convert seconds into hh:mm:ss
 def sec2str(seconds):

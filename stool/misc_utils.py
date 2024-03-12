@@ -1,14 +1,8 @@
-import logging
-import threading
-import colorlog
 import requests
-import time
 import sys
 import hashlib
 import os
 
-from datetime import datetime, timedelta
-from dateutil.relativedelta import relativedelta
 
 
 def expand_config_file(file):
