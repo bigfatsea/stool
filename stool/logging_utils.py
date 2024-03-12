@@ -100,6 +100,8 @@ class Counter(dict):
             self.timestamp = time.time()
 
     def log_progress(self, key=None, modulus=1, interval=300):
+        if not self:
+            return
         modulus = max(1, modulus) if modulus else 1
         has_key = key and key in self
         if (time.time() - self.last_progress_call) > interval:
