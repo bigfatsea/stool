@@ -5,7 +5,7 @@ import os
 
 if __name__ == "__main__":
     # open file __main__.py in the same directory of this file
-    main_py_file = "stool/__main__.py"
+    main_py_file = "__main__.py"
     print(f'Updating version.py file: {os.path.abspath(main_py_file)}')
     # 更新version.py文件
     with open(main_py_file, "r") as file:
