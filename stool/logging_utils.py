@@ -9,12 +9,15 @@ from colorama import Fore
 # Thread-specific colors
 # _THREAD_COLORS = [34, 36, 32, 33, 31, 35]
 _THREAD_COLORS = [Fore.BLUE, Fore.CYAN, Fore.GREEN, Fore.YELLOW, Fore.RED, Fore.MAGENTA]
+_RESET_COLOR = Fore.RESET
+
 
 # convert seconds into hh:mm:ss
 def sec2str(seconds):
     m, s = divmod(seconds, 60)
     h, m = divmod(m, 60)
     return f"{int(h):02d}:{int(m):02d}:{int(s):02d}"
+
 
 def get_thread_number():
     """Get the thread number."""
@@ -37,12 +40,12 @@ def print_cmd():
 def printc(message):
     """Print colored message based on the thread number."""
     color = _get_thread_color()
-    print(f"{color}{message}")
+    print(f"{color}{message}{_RESET_COLOR}")
 
 
 class _ThreadColorFormatter(colorlog.ColoredFormatter):
     def format(self, record):
-        record.msg = f"{_get_thread_color()}{record.msg}"
+        record.msg = f"{_get_thread_color()}{record.msg}{_RESET_COLOR}"
         return super().format(record)
 
 

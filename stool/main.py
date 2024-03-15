@@ -1,6 +1,7 @@
 from misc_utils import *
 from logging_utils import *
 from date_utils import *
+from concurrent.futures import ThreadPoolExecutor
 
 # Your main script logic using the functions from the imported modules
 if __name__ == '__main__':
@@ -17,6 +18,29 @@ if __name__ == '__main__':
     logger = get_colored_logger('worker')
 
     logger1.info('logger1')
+
+
+
+    def worker():
+        """Example worker function to log and print messages."""
+        thread_name = threading.current_thread().name
+        logger.debug("This is a debug message")
+        logger.info("This is an info message")
+        logger.warning("This is a warning message")
+        logger.error("This is an error message")
+        logger.critical("This is a critical message")
+        time.sleep(1 + 0.1 * get_thread_number())
+        printc(f"This is a message from the {thread_name}|{get_thread_number()} thread.")
+
+
+    worker()
+    time.sleep(0.5)
+    logger.info('-' * 30)
+
+    with ThreadPoolExecutor(max_workers=2) as executor:
+        for i in range(2):
+            executor.submit(worker)
+
 
     start = '2024-01-10'
     end = '2024-01-11'
