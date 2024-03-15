@@ -28,7 +28,7 @@ def get_thread_number():
 def _get_thread_color():
     """Get color based on the thread number."""
     thread_number = get_thread_number()
-    return 37 if thread_number < 0 else _THREAD_COLORS[thread_number % len(_THREAD_COLORS)]
+    return Fore.WHITE if thread_number < 0 else _THREAD_COLORS[thread_number % len(_THREAD_COLORS)]
 
 
 def print_cmd():
