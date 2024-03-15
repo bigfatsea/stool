@@ -13,18 +13,50 @@ def last_day_of_month(any_day):
 
 
 def split_into_months(start_date, end_date):
+    return generate_time_ranges(start_date, end_date, 'monthly')
+
+
+def generate_time_ranges(start_date, end_date, interval='monthly'):
+    """Generates time ranges based on a given interval.
+
+    Args:
+        start_date (str): Start date in "yyyy-MM-dd" format.
+        end_date (str): End date in "yyyy-MM-dd" format.
+        interval (str or int): Interval specification. Can be:
+            - 'monthly'
+            - 'weekly'
+            - 'daily'
+            - An integer representing a number of days.
+
+    Returns:
+        list: List of time ranges, each as a tuple of strings
+              (start_date, end_date) in "yyyy-MM-dd" format.
+    """
+
     start = datetime.strptime(start_date, '%Y-%m-%d')
     end = datetime.strptime(end_date, '%Y-%m-%d')
     ranges = []
 
-    while start < end:
-        # Determine the last day of the month for the current 'start'
-        end_of_month = last_day_of_month(start)
-        # If the end_of_month is after the 'end', use 'end' instead
-        current_end = min(end, end_of_month)
-        # Add the current range to the list
-        ranges.append((start.strftime('%Y-%m-%d'), current_end.strftime('%Y-%m-%d')))
-        # Set the new start to be the day after the current_end
-        start = current_end + timedelta(days=1)
+    if interval == 'monthly':
+        while start < end:
+            end_of_month = last_day_of_month(start)
+            current_end = min(end, end_of_month)
+            ranges.append((start.strftime('%Y-%m-%d'), current_end.strftime('%Y-%m-%d')))
+            start = current_end + timedelta(days=1)
+    else:
+        if interval == 'weekly':
+            inter = 6
+        elif interval == 'daily':
+            inter = 1
+        elif isinstance(interval, int) or interval.isdigit():
+            inter = int(interval) - 1 if int(interval) > 1 else 1
+        else:
+            raise ValueError("Invalid interval. Use 'monthly', 'weekly', 'daily', or an integer.")
+
+        while start < end:
+            current_end = start + timedelta(days=inter)
+            current_end = min(end, current_end)
+            ranges.append((start.strftime('%Y-%m-%d'), current_end.strftime('%Y-%m-%d')))
+            start = current_end + timedelta(days=1)
 
     return ranges
