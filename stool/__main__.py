@@ -5,6 +5,9 @@ from concurrent.futures import ThreadPoolExecutor
 
 # Your main script logic using the functions from the imported modules
 if __name__ == '__main__':
+    latest_commit_time = '2021-08-01 12:00:00'
+    print(f'Latest commit time: {latest_commit_time}')
+
     counter = Counter()
     counter.log_progress()
     counter.incr('x')
@@ -18,7 +21,6 @@ if __name__ == '__main__':
     logger = get_colored_logger('worker')
 
     logger1.info('logger1')
-
 
 
     def worker():
@@ -40,7 +42,6 @@ if __name__ == '__main__':
     with ThreadPoolExecutor(max_workers=2) as executor:
         for i in range(2):
             executor.submit(worker)
-
 
     start = '2024-01-10'
     end = '2024-01-11'
