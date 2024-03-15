@@ -5,7 +5,7 @@ from concurrent.futures import ThreadPoolExecutor
 
 # Your main script logic using the functions from the imported modules
 if __name__ == '__main__':
-    latest_commit_time = '2021-08-01 12:00:00'
+    latest_commit_time = '2021-08-01 12:00:0'
     print(f'Latest commit time: {latest_commit_time}')
 
     counter = Counter()
