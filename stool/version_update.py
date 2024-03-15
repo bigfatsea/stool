@@ -12,6 +12,7 @@ if __name__ == "__main__":
     # 替换时间戳
     now_yyyy_mm_dd_HH_mm_ss = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     content = re.sub(r'latest_commit_time = ".*"', f'latest_commit_time = "{now_yyyy_mm_dd_HH_mm_ss}"', content)
+    print(f'latest_commit_time = "{now_yyyy_mm_dd_HH_mm_ss}"')
 
     with open(main_py_file, "w") as file:
         file.write(content)
