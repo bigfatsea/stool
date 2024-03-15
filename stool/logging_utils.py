@@ -96,6 +96,11 @@ class Counter(dict):
             self[key] = self.get(key, 0) + value
             return self[key]
 
+    def increment(self, key, value=1):
+        with self.lock:
+            self[key] = self.get(key, 0) + value
+            return self[key]
+
     def reset(self):
         with self.lock:
             self.clear()
