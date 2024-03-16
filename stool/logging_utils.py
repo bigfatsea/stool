@@ -37,10 +37,18 @@ def print_cmd():
     print(f"\n{header:-^80}\n {cmd}\n{'-' * 80}")
 
 
-def printc(message):
-    """Print colored message based on the thread number."""
+def printc(*messages, **kwargs):
+    """
+    Print colored messages based on the thread number.
+    Each message will be printed on a new line.
+
+    :param messages: Any number of messages to be printed.
+    :param kwargs: Keyword arguments that could be passed to the print function.
+    """
     color = _get_thread_color()
-    print(f"{color}{message}{_RESET_COLOR}")
+    reset_color = _RESET_COLOR
+    for message in messages:
+        print(f"{color}{message}{reset_color}", **kwargs)
 
 
 class _ThreadColorFormatter(colorlog.ColoredFormatter):
