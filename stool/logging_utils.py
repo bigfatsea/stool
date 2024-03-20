@@ -81,6 +81,8 @@ class Counter(dict):
         return self.to_str(60, 'Counter')
 
     def to_str(self, width=40, title=''):
+        if not self:
+            return
         if width < 23:
             width = 23
         max_k = max([len(k) for k in self.keys()])
