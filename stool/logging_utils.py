@@ -34,7 +34,7 @@ def _get_thread_color():
 def print_cmd():
     header = 'START @ ' + time.strftime("%Y-%m-%d %H:%M:%S")
     cmd = f"{os.path.basename(sys.argv[0])} {' '.join(sys.argv[1:])}"
-    print(f"\n{header:-^80}\n {cmd}\n{'-' * 80}")
+    print(f"\n{header:-^80}\n {cmd}\n{'-' * 80}", flush=True)
 
 
 def printc(*messages, **kwargs):
@@ -125,10 +125,10 @@ class Counter(dict):
         modulus = max(1, modulus) if modulus else 1
         has_key = key and key in self
         if (time.time() - self.last_progress_call) > interval:
-            printc(self)
+            printc(self, flush=True)
             with self.lock:
                 self.last_progress_call = time.time()
         elif (has_key and self.get(key, 0) % modulus == 0):
-            printc(self)
+            printc(self, flush=True)
             with self.lock:
                 self.last_progress_call = time.time()
