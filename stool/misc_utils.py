@@ -54,6 +54,7 @@ def deep_get(dictionary, keys, default=None):
                 dictionary = dictionary[key]
             else:
                 return default
+        return dictionary
 
     return default
 
