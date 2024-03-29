@@ -47,9 +47,9 @@ def generate_time_ranges(start_date, end_date, interval='monthly'):
         if interval == 'weekly':
             inter = 6
         elif interval == 'daily':
-            inter = 1
+            inter = 0
         elif isinstance(interval, int) or interval.isdigit():
-            inter = int(interval) - 1 if int(interval) > 1 else 1
+            inter = int(interval) - 1 if int(interval) > 0 else 0
         else:
             raise ValueError("Invalid interval. Use 'monthly', 'weekly', 'daily', or an integer.")
 

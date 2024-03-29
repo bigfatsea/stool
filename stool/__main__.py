@@ -6,7 +6,7 @@ from concurrent.futures import ThreadPoolExecutor
 
 # Your main script logic using the functions from the imported modules
 if __name__ == '__main__':
-    latest_commit_time = "2024-03-29 00:11:12"
+    latest_commit_time = "2024-03-30 00:14:18"
 
     print(f'Latest commit time: {latest_commit_time}')
 
@@ -47,7 +47,7 @@ if __name__ == '__main__':
             executor.submit(worker)
 
     start = '2024-01-10'
-    end = '2024-01-11'
+    end = '2024-01-17'
 
     print('\n'.join([str(x) for x in generate_time_ranges(start, end)]))
     print('--')
@@ -55,6 +55,7 @@ if __name__ == '__main__':
     print('--')
     print('\n'.join([str(x) for x in generate_time_ranges(start, end, '5')]))
     print('--')
+    print('\n'.join([str(x) for x in generate_time_ranges(start, end, 1)]))
     print('--')
 
     print('\n'.join([str(x) for x in split_into_months(start, end)]))
