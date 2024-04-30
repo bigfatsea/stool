@@ -4,7 +4,6 @@ import hashlib
 import os
 
 
-
 def expand_config_file(file):
     code_file_dir = os.path.dirname(os.path.abspath(__file__))
     return os.path.join(code_file_dir, file)
@@ -50,11 +49,10 @@ def deep_get(dictionary, keys, default=None):
 
     if keys and isinstance(keys, list):
         for key in keys:
-            if dictionary and key in dictionary:
+            if isinstance(dictionary, dict) and key in dictionary:
                 dictionary = dictionary[key]
             else:
                 return default
         return dictionary
 
     return default
-
