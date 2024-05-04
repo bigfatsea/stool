@@ -23,6 +23,8 @@ def generate_time_ranges(start_date, end_date, interval='monthly'):
         start_date (str): Start date in "yyyy-MM-dd" format.
         end_date (str): End date in "yyyy-MM-dd" format.
         interval (str or int): Interval specification. Can be:
+            - 'yearly'
+            - 'quarterly'
             - 'monthly'
             - 'weekly'
             - 'daily'
@@ -41,6 +43,25 @@ def generate_time_ranges(start_date, end_date, interval='monthly'):
         while start < end:
             end_of_month = last_day_of_month(start)
             current_end = min(end, end_of_month)
+            ranges.append((start.strftime('%Y-%m-%d'), current_end.strftime('%Y-%m-%d')))
+            start = current_end + timedelta(days=1)
+    elif interval == 'yearly':
+        while start < end:
+            end_of_year = start.replace(month=12, day=31)
+            current_end = min(end, end_of_year)
+            ranges.append((start.strftime('%Y-%m-%d'), current_end.strftime('%Y-%m-%d')))
+            start = current_end + timedelta(days=1)
+    elif interval == 'quarterly':
+        while start < end:
+            if start.month in [1, 2, 3]:
+                end_of_quarter = start.replace(month=3, day=31)
+            elif start.month in [4, 5, 6]:
+                end_of_quarter = start.replace(month=6, day=30)
+            elif start.month in [7, 8, 9]:
+                end_of_quarter = start.replace(month=9, day=30)
+            else:
+                end_of_quarter = start.replace(month=12, day=31)
+            current_end = min(end, end_of_quarter)
             ranges.append((start.strftime('%Y-%m-%d'), current_end.strftime('%Y-%m-%d')))
             start = current_end + timedelta(days=1)
     else:
