@@ -44,6 +44,9 @@ def del_by_size(directory, ext='.html', min_size=3 * 1024):
 
 
 def deep_get(dictionary, keys, default=None):
+    if not dictionary:
+        return default
+
     if isinstance(keys, str):
         keys = keys.split('.')
 
