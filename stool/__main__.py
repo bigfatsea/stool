@@ -3,10 +3,10 @@ from .logging_utils import *
 from .date_utils import *
 from concurrent.futures import ThreadPoolExecutor
 
-
 # Your main script logic using the functions from the imported modules
 if __name__ == '__main__':
-    latest_commit_time = "2024-05-05 14:42:45"
+    print_cmd()
+    latest_commit_time = "2024-05-07 23:38:10"
 
     print(f'Latest commit time: {latest_commit_time}')
 
@@ -14,9 +14,16 @@ if __name__ == '__main__':
     counter.to_str()
     counter.log_progress()
     counter.incr('x')
+    counter.incr('xx' * 10, -10000.12300)
+    counter.incr('xx' * 20, 100000001000.0000)
+    counter.increment('y', 0.0001)
+    counter.increment('z', 0.0030001)
+    counter.increment('zz', 0.000000)
     counter.log_progress()
 
-    print_cmd()
+    if (True):
+        exit(0)
+
     xxx = logging.getLogger('xxx')
     xxx.error('This is a message from the xxx.')
     logger1 = get_colored_logger('worker')

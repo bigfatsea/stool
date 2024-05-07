@@ -85,15 +85,19 @@ class Counter(dict):
             return
         if width < 23:
             width = 23
-        max_k = max([len(k) for k in self.keys()])
-        max_v = max([len(f'{v:,}') for v in self.values()])
 
-        if max_k + max_v + 5 > width:
-            width = max_k + max_v + 5
+        v2str = lambda v: (f' {v:,.4f}' if v > 10 else f' {v:,.6f}').rstrip('0').rstrip('.')
+
+        new_dict = {f'{k} ': v2str(v) for k, v in self.items()}
+
+        max_k = max([len(k) for k in new_dict.keys()])
+        max_v = max([len(v) for v in new_dict.values()])
+
+        if max_k + max_v + 6 > width:
+            width = max_k + max_v + 6
 
         kw = width - max_v - 4
-
-        s = '\n'.join([f'+ {k:.<{kw}}{v:.>{max_v},} +' for k, v in sorted(self.items())])
+        s = '\n'.join([f'+ {k:.<{kw}}{v:.>{max_v}} +' for k, v in sorted(new_dict.items())])
         title = '' if not title else title + ' '
         dt = title + time.strftime("%Y-%m-%d %H:%M:%S")
         et = 'Escaped: ' + sec2str(time.time() - self.timestamp)
