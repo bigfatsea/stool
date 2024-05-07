@@ -21,7 +21,6 @@ if __name__ == '__main__':
     counter.increment('zz', 0.000000)
     counter.log_progress()
 
-
     xxx = logging.getLogger('xxx')
     xxx.error('This is a message from the xxx.')
     logger1 = get_colored_logger('worker')
