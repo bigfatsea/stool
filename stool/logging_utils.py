@@ -4,7 +4,9 @@ import colorlog
 import time
 import os
 import sys
+
 from colorama import Fore
+from misc_utils import deprecated
 
 # Thread-specific colors
 # _THREAD_COLORS = [34, 36, 32, 33, 31, 35]
@@ -17,6 +19,12 @@ def sec2str(seconds):
     m, s = divmod(seconds, 60)
     h, m = divmod(m, 60)
     return f"{int(h):02d}:{int(m):02d}:{int(s):02d}"
+
+
+def sec2str_hms(seconds):
+    m, s = divmod(seconds, 60)
+    h, m = divmod(m, 60)
+    return f"{int(h):d}h {int(m):d}m {int(s):d}s"
 
 
 def get_thread_number():
@@ -100,7 +108,7 @@ class Counter(dict):
         s = '\n'.join([f'+ {k:.<{kw}}{v:.>{max_v}} +' for k, v in sorted(new_dict.items())])
         title = '' if not title else title + ' '
         dt = title + time.strftime("%Y-%m-%d %H:%M:%S")
-        et = 'Escaped: ' + sec2str(time.time() - self.timestamp)
+        et = 'Escaped: ' + sec2str_hms(time.time() - self.timestamp)
         return f"\n+ {dt:-^{width - 4}} +\n{s}\n+ {et:-^{width - 4}} +\n"
 
     def set(self, key, value=0):
@@ -108,11 +116,18 @@ class Counter(dict):
             self[key] = value
             return self[key]
 
+    def inc(self, key, value=1):
+        with self.lock:
+            self[key] = self.get(key, 0) + value
+            return self[key]
+
+    @deprecated('use inc() instead')
     def incr(self, key, value=1):
         with self.lock:
             self[key] = self.get(key, 0) + value
             return self[key]
 
+    @deprecated('use inc() instead')
     def increment(self, key, value=1):
         with self.lock:
             self[key] = self.get(key, 0) + value

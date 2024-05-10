@@ -2,6 +2,22 @@ import requests
 import sys
 import hashlib
 import os
+import warnings
+import functools
+
+
+def deprecated(reason=''):
+    def decorator(func):
+        @functools.wraps(func)
+        def wrapper(*args, **kwargs):
+            warnings.warn(f"{func.__name__} is deprecated and will be removed in a future version. {reason}",
+                          category=DeprecationWarning,
+                          stacklevel=2)
+            return func(*args, **kwargs)
+
+        return wrapper
+
+    return decorator
 
 
 def expand_config_file(file):
