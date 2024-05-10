@@ -6,7 +6,7 @@ import os
 import sys
 
 from colorama import Fore
-from misc_utils import deprecated
+from .misc_utils import deprecated
 
 # Thread-specific colors
 # _THREAD_COLORS = [34, 36, 32, 33, 31, 35]
