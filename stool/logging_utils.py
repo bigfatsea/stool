@@ -30,7 +30,8 @@ def sec2str_hms(seconds):
 def get_thread_number():
     """Get the thread number."""
     thread_name = threading.current_thread().name
-    return int(thread_name.split('-')[-1]) if '-' in thread_name else -1
+    n = ''.join(filter(str.isdigit, thread_name.split('-')[-1]))
+    return int(n) if n.isdigit() else -1
 
 
 def _get_thread_color():
@@ -151,3 +152,16 @@ class Counter(dict):
             printc(self, flush=True)
             with self.lock:
                 self.last_progress_call = time.time()
+
+
+if __name__ == "__main__":
+    print_cmd()
+    thread_names = [
+        'main thread', 'thread-123', 'thread-123xxx', 'thread-sdf'
+
+    ]
+    for tn in thread_names:
+        # remove all \D from x
+        xx = ''.join(filter(str.isdigit, tn.split('-')[-1]))
+
+        print(xx)
