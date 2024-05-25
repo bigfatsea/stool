@@ -72,6 +72,6 @@ def deep_get(dictionary, keys, default=None):
                 dictionary = dictionary[key]
             else:
                 return default
-        return dictionary
+        return dictionary if None != dictionary else default
 
     return default
