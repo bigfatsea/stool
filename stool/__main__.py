@@ -9,6 +9,13 @@ if __name__ == '__main__':
     latest_commit_time = "2024-05-07 23:47:02"
     print(f'Latest commit time: {latest_commit_time}')
 
+    print(generate_time_ranges('2023-12-31', '2024-01-01', 'daily'))
+    print(generate_time_ranges('2023-12-31', '2024-01-01', 2))
+    print(generate_time_ranges('2023-12-31', '2024-01-01', 3))
+    print(generate_time_ranges('2023-12-31', '2024-01-01', 'weekly'))
+    print(generate_time_ranges('2023-12-31', '2024-01-01', 'monthly'))
+    print(generate_time_ranges('2023-12-31', '2024-01-01', 'quarterly'))
+    print(generate_time_ranges('2023-12-31', '2024-01-01', 'yearly'))
 
     print_cmd()
 

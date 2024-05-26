@@ -40,19 +40,19 @@ def generate_time_ranges(start_date, end_date, interval='monthly'):
     ranges = []
 
     if interval == 'monthly':
-        while start < end:
+        while start <= end:
             end_of_month = last_day_of_month(start)
             current_end = min(end, end_of_month)
             ranges.append((start.strftime('%Y-%m-%d'), current_end.strftime('%Y-%m-%d')))
             start = current_end + timedelta(days=1)
     elif interval == 'yearly':
-        while start < end:
+        while start <= end:
             end_of_year = start.replace(month=12, day=31)
             current_end = min(end, end_of_year)
             ranges.append((start.strftime('%Y-%m-%d'), current_end.strftime('%Y-%m-%d')))
             start = current_end + timedelta(days=1)
     elif interval == 'quarterly':
-        while start < end:
+        while start <= end:
             if start.month in [1, 2, 3]:
                 end_of_quarter = start.replace(month=3, day=31)
             elif start.month in [4, 5, 6]:
@@ -74,7 +74,7 @@ def generate_time_ranges(start_date, end_date, interval='monthly'):
         else:
             raise ValueError("Invalid interval. Use 'monthly', 'weekly', 'daily', or an integer.")
 
-        while start < end:
+        while start <= end:
             current_end = start + timedelta(days=inter)
             current_end = min(end, current_end)
             ranges.append((start.strftime('%Y-%m-%d'), current_end.strftime('%Y-%m-%d')))
