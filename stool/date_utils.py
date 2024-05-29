@@ -72,7 +72,8 @@ def generate_time_ranges(start_date, end_date, interval='monthly'):
         elif isinstance(interval, int) or interval.isdigit():
             inter = int(interval) - 1 if int(interval) > 0 else 0
         else:
-            raise ValueError("Invalid interval. Use 'monthly', 'weekly', 'daily', or an integer.")
+            ranges.append((start_date, end_date))
+            return ranges
 
         while start <= end:
             current_end = start + timedelta(days=inter)
