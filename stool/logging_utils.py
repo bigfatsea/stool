@@ -60,6 +60,11 @@ def printc(*messages, **kwargs):
         print(f"{color}{message}{reset_color}", **kwargs)
 
 
+def print_and_return(obj):
+    print(obj)
+    return obj
+
+
 class _ThreadColorFormatter(colorlog.ColoredFormatter):
     def format(self, record):
         record.msg = f"{_get_thread_color()}{record.msg}{_RESET_COLOR}"
