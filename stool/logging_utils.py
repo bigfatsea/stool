@@ -60,8 +60,8 @@ def printc(*messages, **kwargs):
         print(f"{color}{message}{reset_color}", **kwargs)
 
 
-def print_and_return(obj):
-    print(obj)
+def print_and_return(obj, *args, **kwargs):
+    print(obj, *args, **kwargs)
     return obj
 
 
