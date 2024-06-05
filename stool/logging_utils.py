@@ -71,6 +71,13 @@ class _ThreadColorFormatter(colorlog.ColoredFormatter):
         return super().format(record)
 
 
+def flush_logger(logger):
+    if not logger:
+        return
+    for handler in logger.handlers:
+        handler.flush()
+
+
 def get_colored_logger(name='root', level=logging.INFO):
     """Configure and return a logger with colored output."""
     logger = logging.getLogger(name)
