@@ -31,27 +31,7 @@ class StatusMonitor:
 
         self.mdb[db_name][collection_name].delete_one({'_id': id})
 
-    def save_status(self, service_name, status='running', start_timestamp=None, id=None,
-                    collection_name=_COLLECTION_NAME, db_name=_DB_NAME):
-        if not service_name or not status:
-            return
-
-        if not start_timestamp:
-            start_timestamp = self.start_timestamp
-
-        start_time = datetime.utcfromtimestamp(start_timestamp).replace(tzinfo=pytz.utc)
-        time_elapsed_str = str(datetime.now(pytz.utc) - start_time).split('.')[0]
-
-        _logger.info(f'Saving status for {service_name}.')
-        data = {'service': service_name, 'status': status, 'start_times': start_time, 'time_elapsed': time_elapsed_str}
-        self.mdb[db_name][collection_name].update_one(
-            {'_id': id if id else self.status_id},
-            {'$set': {**data, 'category': _CAT_SERVICE_STATUS, 'update_time': datetime.now(pytz.utc)}},
-            upsert=True
-        )
-        _logger.info(f'Saved status for {service_name}.')
-
-    def save_stats(self, category, data, id=None, collection_name=_COLLECTION_NAME, db_name=_DB_NAME):
+    def save(self, category, data, id=None, collection_name=_COLLECTION_NAME, db_name=_DB_NAME):
         if not category or not data:
             return
 
@@ -63,7 +43,23 @@ class StatusMonitor:
         )
         _logger.info(f'Saved stats for {category}.')
 
-    def get_status(self, category, start=None, end=None, collection_name=_COLLECTION_NAME, db_name=_DB_NAME):
+    def delete_status(self, collection_name=_COLLECTION_NAME, db_name=_DB_NAME):
+        self.delete(self.status_id, collection_name, db_name)
+
+    def save_status(self, service_name, status='running', start_timestamp=None, id=None,
+                    collection_name=_COLLECTION_NAME, db_name=_DB_NAME):
+        if not service_name or not status:
+            return
+
+        if not start_timestamp:
+            start_timestamp = self.start_timestamp
+
+        start_time = datetime.fromtimestamp(start_timestamp, tz=pytz.utc)
+        data = {'service': service_name, 'status': status, 'start_time': start_time}
+
+        self.save(_CAT_SERVICE_STATUS, data, id, collection_name, db_name)
+
+    def load(self, category, start=None, end=None, collection_name=_COLLECTION_NAME, db_name=_DB_NAME):
         if not category:
             return []
         if not start:
@@ -74,7 +70,7 @@ class StatusMonitor:
         result = self.mdb[db_name][collection_name].find(condition)
         return list(result)
 
-    def get_categories(self, collection_name=_COLLECTION_NAME, db_name=_DB_NAME):
+    def load_categories(self, collection_name=_COLLECTION_NAME, db_name=_DB_NAME):
         categories = self.mdb[db_name][collection_name].distinct('category')
         return sorted(categories)
 
@@ -82,11 +78,11 @@ class StatusMonitor:
 if __name__ == '__main__':
     sm = StatusMonitor()
 
-    sm.save_stats('test', {'a': 1, 'b': 2})
-    print('\n'.join([str(x) for x in sm.get_status('test')]))
+    sm.save('test', {'a': 1, 'b': 2})
+    print('\n'.join([str(x) for x in sm.load('test')]))
     start = datetime.strptime('2024-06-29', "%Y-%m-%d").replace(tzinfo=pytz.utc)
     end = datetime.strptime('2024-07-07', "%Y-%m-%d").replace(tzinfo=pytz.utc)
-    statses = sm.get_status('test', start, end)
+    statses = sm.load('test', start, end)
     print('\n\t'.join([str(x) for x in statses]))
-    categories = sm.get_categories()
+    categories = sm.load_categories()
     print(categories)
