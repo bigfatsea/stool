@@ -4,11 +4,13 @@ import logging
 from datetime import datetime, timedelta
 from bson import ObjectId
 
+_logger = logging.getLogger(__name__)
+
 _DB_NAME = 'reeval'
 _COLLECTION_NAME = 'status_monitor'
-_CAT_SERVICE_STATUS = 'service_status'
 
-_logger = logging.getLogger(__name__)
+
+CAT_SERVICE_STATUS = 'service_status'
 
 
 class StatusMonitor:
@@ -57,7 +59,7 @@ class StatusMonitor:
         start_time = datetime.fromtimestamp(start_timestamp, tz=pytz.utc)
         data = {'service': service_name, 'status': status, 'start_time': start_time}
 
-        self.save(_CAT_SERVICE_STATUS, data, id if id else self.status_id, collection_name, db_name)
+        self.save(CAT_SERVICE_STATUS, data, id if id else self.status_id, collection_name, db_name)
 
     def load(self, category, start=None, end=None, collection_name=_COLLECTION_NAME, db_name=_DB_NAME):
         if not category:
