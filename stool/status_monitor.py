@@ -43,10 +43,10 @@ class StatusMonitor:
         )
         _logger.info(f'Saved stats for {category}.')
 
-    def delete_status(self, collection_name=_COLLECTION_NAME, db_name=_DB_NAME):
-        self.delete(self.status_id, collection_name, db_name)
+    def delete_status(self, id=None, collection_name=_COLLECTION_NAME, db_name=_DB_NAME):
+        self.delete(id if id else self.status_id, collection_name, db_name)
 
-    def save_status(self, service_name, status='running', start_timestamp=None, id=None,
+    def save_status(self, service_name, status='running', id=None, start_timestamp=None,
                     collection_name=_COLLECTION_NAME, db_name=_DB_NAME):
         if not service_name or not status:
             return
@@ -57,7 +57,7 @@ class StatusMonitor:
         start_time = datetime.fromtimestamp(start_timestamp, tz=pytz.utc)
         data = {'service': service_name, 'status': status, 'start_time': start_time}
 
-        self.save(_CAT_SERVICE_STATUS, data, id, collection_name, db_name)
+        self.save(_CAT_SERVICE_STATUS, data, id if id else self.status_id, collection_name, db_name)
 
     def load(self, category, start=None, end=None, collection_name=_COLLECTION_NAME, db_name=_DB_NAME):
         if not category:
