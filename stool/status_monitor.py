@@ -9,7 +9,6 @@ _logger = logging.getLogger(__name__)
 _DB_NAME = 'reeval'
 _COLLECTION_NAME = 'status_monitor'
 
-
 CAT_SERVICE_STATUS = 'service_status'
 
 
@@ -43,7 +42,7 @@ class StatusMonitor:
             {'$set': {**data, 'category': category, 'update_time': datetime.now(pytz.utc)}},
             upsert=True
         )
-        _logger.info(f'Saved stats for {category}:{data}.')
+        _logger.info(f'Saved stats for {category}, id({id}): {data}\n')
 
     def delete_status(self, id=None, collection_name=_COLLECTION_NAME, db_name=_DB_NAME):
         self.delete(id if id else self.status_id, collection_name, db_name)
