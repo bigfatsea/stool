@@ -13,14 +13,15 @@ CAT_SERVICE_STATUS = 'service_status'
 
 
 class StatusMonitor:
-    start_timestamp = datetime.now().timestamp()
-    status_id = ObjectId()
-    stats_id = ObjectId()
 
     def __init__(self, uri=None):
         if not uri:
             raise ValueError('Missing MongoDB URI')
         self.mdb = pymongo.MongoClient(uri)
+
+        self.start_timestamp = datetime.now().timestamp()
+        self.status_id = ObjectId()
+        self.stats_id = ObjectId()
 
     @classmethod
     def new_id(cls):
