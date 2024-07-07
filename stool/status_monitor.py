@@ -37,12 +37,13 @@ class StatusMonitor:
             return
 
         _logger.info(f'Saving stats for {category}.')
+        _id = id if id else self.stats_id
         self.mdb[db_name][collection_name].update_one(
-            {'_id': id if id else self.stats_id},
+            {'_id': _id},
             {'$set': {**data, 'category': category, 'update_time': datetime.now(pytz.utc)}},
             upsert=True
         )
-        _logger.info(f'Saved stats for {category}, id({id}): {data}\n')
+        _logger.info(f'Saved stats for {category}, id({_id}): {data}\n')
 
     def delete_status(self, id=None, collection_name=_COLLECTION_NAME, db_name=_DB_NAME):
         self.delete(id if id else self.status_id, collection_name, db_name)
