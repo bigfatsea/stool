@@ -27,24 +27,28 @@ class StatusMonitor:
     def new_id(cls):
         return ObjectId()
 
-    def delete(self, id, collection_name=_COLLECTION_NAME, db_name=_DB_NAME):
-        if not id:
-            return
-
-        self.mdb[db_name][collection_name].delete_one({'_id': id})
+    def delete(self, id=None, category=None, collection_name=_COLLECTION_NAME, db_name=_DB_NAME):
+        if id:
+            self.mdb[db_name][collection_name].delete_one({'_id': id})
+            _logger.info(f'Deleted status/stats with id: {id}.\n')
+        elif category:
+            self.mdb[db_name][collection_name].delete_many({'category': category})
+            _logger.info(f'Deleted status/stats with category: {category}.\n')
+        else:
+            _logger.warning('No id or category provided to delete status/stats.')
 
     def save(self, category, data, id=None, collection_name=_COLLECTION_NAME, db_name=_DB_NAME):
         if not category or not data:
             return
 
-        _logger.info(f'Saving stats for {category}.')
+        _logger.info(f'Saving status/stats for {category}.')
         _id = id if id else self.stats_id
         self.mdb[db_name][collection_name].update_one(
             {'_id': _id},
             {'$set': {**data, 'category': category, 'update_time': datetime.now(pytz.utc)}},
             upsert=True
         )
-        _logger.info(f'Saved stats for {category}, id({_id}): {data}\n')
+        _logger.info(f'Saved status/stats for {category}, id({_id}): {data}\n')
 
     def delete_status(self, id=None, collection_name=_COLLECTION_NAME, db_name=_DB_NAME):
         self.delete(id if id else self.status_id, collection_name, db_name)
