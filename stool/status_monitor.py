@@ -51,7 +51,7 @@ class StatusMonitor:
         _logger.info(f'Saved status/stats for {category}, id({_id}): {data}\n')
 
     def delete_status(self, id=None, collection_name=_COLLECTION_NAME, db_name=_DB_NAME):
-        self.delete(id if id else self.status_id, collection_name, db_name)
+        self.delete(id=id if id else self.status_id, collection_name=collection_name, db_name=db_name)
 
     def save_status(self, service_name, status='running', id=None, start_timestamp=None,
                     collection_name=_COLLECTION_NAME, db_name=_DB_NAME):
