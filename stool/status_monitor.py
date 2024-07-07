@@ -43,7 +43,7 @@ class StatusMonitor:
             {'$set': {**data, 'category': category, 'update_time': datetime.now(pytz.utc)}},
             upsert=True
         )
-        _logger.info(f'Saved stats for {category}.')
+        _logger.info(f'Saved stats for {category}:{data}.')
 
     def delete_status(self, id=None, collection_name=_COLLECTION_NAME, db_name=_DB_NAME):
         self.delete(id if id else self.status_id, collection_name, db_name)
