@@ -60,7 +60,7 @@ class StatusMonitor:
 
         if delete_condition:
             result = self.mdb[db_name][collection_name].delete_many(delete_condition)
-            _logger.info(f'Deleted ${result.deleted_count} status/stats with condition: {delete_condition}\n')
+            _logger.info(f'Deleted {result.deleted_count} status/stats with condition: {delete_condition}\n')
         else:
             _logger.info('No condition specified for deletion.\n')
 
