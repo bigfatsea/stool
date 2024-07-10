@@ -1,6 +1,9 @@
-import pytz
+import os
+
 import pymongo
 import logging
+import pytz
+from dateutil import parser as dateutil_parser
 from datetime import datetime, timedelta
 from bson import ObjectId
 
@@ -27,15 +30,39 @@ class StatusMonitor:
     def new_id(cls):
         return ObjectId()
 
-    def delete(self, id=None, category=None, collection_name=_COLLECTION_NAME, db_name=_DB_NAME):
+    def delete(self, id=None, category=None, start=None, end=None, collection_name=_COLLECTION_NAME, db_name=_DB_NAME):
+        delete_condition = {}
+        if end:
+            try:
+                start_date = start if start else datetime.now(pytz.utc) - timedelta(days=365)
+                if not isinstance(start_date, datetime):
+                    start_date = dateutil_parser.parse(start_date)
+                if not start_date.tzinfo:
+                    start_date = start_date.replace(tzinfo=pytz.utc)
+                end_date = end
+                if not isinstance(end_date, datetime):
+                    end_date = dateutil_parser.parse(end_date)
+                if not end_date.tzinfo:
+                    end_date = end_date.replace(tzinfo=pytz.utc)
+                delete_condition['update_time'] = {'$gte': start_date, '$lt': end_date}
+            except Exception as e:
+                _logger.error(f'Failed to parse start/end time: {e}')
+
         if id:
-            self.mdb[db_name][collection_name].delete_one({'_id': id})
-            _logger.info(f'Deleted status/stats with id: {id}.\n')
-        elif category:
-            self.mdb[db_name][collection_name].delete_many({'category': category})
-            _logger.info(f'Deleted status/stats with category: {category}.\n')
+            try:
+                _id = id if isinstance(id, ObjectId) else ObjectId(id)
+                delete_condition['_id'] = _id
+            except Exception as e:
+                _logger.error(f'Failed to parse id: {e}')
+
+        if category:
+            delete_condition['category'] = category
+
+        if delete_condition:
+            result = self.mdb[db_name][collection_name].delete_many(delete_condition)
+            _logger.info(f'Deleted ${result.deleted_count} status/stats with condition: {delete_condition}\n')
         else:
-            _logger.warning('No id or category provided to delete status/stats.')
+            _logger.info('No condition specified for deletion.\n')
 
     def save(self, category, data, id=None, collection_name=_COLLECTION_NAME, db_name=_DB_NAME):
         if not category or not data:
@@ -83,13 +110,23 @@ class StatusMonitor:
 
 
 if __name__ == '__main__':
-    sm = StatusMonitor()
-
-    sm.save('test', {'a': 1, 'b': 2})
-    print('\n'.join([str(x) for x in sm.load('test')]))
-    start = datetime.strptime('2024-06-29', "%Y-%m-%d").replace(tzinfo=pytz.utc)
-    end = datetime.strptime('2024-07-07', "%Y-%m-%d").replace(tzinfo=pytz.utc)
-    statses = sm.load('test', start, end)
-    print('\n\t'.join([str(x) for x in statses]))
-    categories = sm.load_categories()
-    print(categories)
+    print('This is a module file, do not run it directly.')
+    # sm = StatusMonitor(os.getenv('MONGO_URI'))
+    # id = ObjectId('60d2f7d5c2b9e4e1b3d7b2a3')
+    # records = sm.load(category='yfinance')
+    # print(f'Loaded {len(records)} records.')
+    # # print('\n'.join([str(x) for x in records]))
+    # sm.delete(id=id)
+    # sm.delete(end='2024-07-07')
+    # records = sm.load(category='yfinance')
+    # print(f'Loaded {len(records)} records.')
+    # print('\n'.join([str(x) for x in records]))
+    #
+    # sm.save('test', {'a': 1, 'b': 2})
+    # print('\n'.join([str(x) for x in sm.load('test')]))
+    # start = datetime.strptime('2024-06-29', "%Y-%m-%d").replace(tzinfo=pytz.utc)
+    # end = datetime.strptime('2024-07-07', "%Y-%m-%d").replace(tzinfo=pytz.utc)
+    # statses = sm.load('test', start, end)
+    # print('\n\t'.join([str(x) for x in statses]))
+    # categories = sm.load_categories()
+    # print(categories)
