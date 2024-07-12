@@ -88,10 +88,13 @@ class StatusMonitor:
         if not start_timestamp:
             start_timestamp = self.start_timestamp
 
-        start_time = datetime.fromtimestamp(start_timestamp, tz=pytz.utc)
-        data = {'service': service_name, 'status': status, 'start_time': start_time}
+        _id = id if id else self.status_id
+        data = {'service': service_name, 'status': status}
 
-        self.save(CAT_SERVICE_STATUS, data, id if id else self.status_id, collection_name, db_name)
+        if not self.mdb[db_name][collection_name].find_one({'_id': _id}):  # not exists, insert with start time
+            data['start_time'] = datetime.fromtimestamp(start_timestamp, tz=pytz.utc)
+
+        self.save(CAT_SERVICE_STATUS, data, _id, collection_name, db_name)
 
     def load(self, category, start=None, end=None, collection_name=_COLLECTION_NAME, db_name=_DB_NAME):
         if not category:
