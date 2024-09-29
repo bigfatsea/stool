@@ -1,9 +1,12 @@
-import requests
-import sys
-import hashlib
-import os
-import warnings
 import functools
+import hashlib
+import json
+import logging
+import os
+import sys
+import warnings
+
+import requests
 
 
 def deprecated(reason=''):
@@ -27,6 +30,22 @@ def expand_config_file(file):
 
 def expand_dir(dir):
     return os.path.expanduser(dir) if dir.startswith('~') else os.path.abspath(dir)
+
+
+def file_exists_and_not_empty(file_path: str, min_size: int = 100) -> bool:
+    return os.path.exists(file_path) and os.path.getsize(file_path) > min_size
+
+
+def save_json(data, file_path: str) -> None:
+    logging.info(f'Saving data to {file_path}')
+    with open(file_path, "w", encoding="utf-8") as f:
+        json.dump(data, f, ensure_ascii=False, indent=2)
+
+
+def load_json(file_path: str):
+    logging.info(f'Loading data from {file_path}')
+    with open(file_path, "r", encoding="utf-8") as f:
+        return json.load(f)
 
 
 def send_msg(message, title=None):
