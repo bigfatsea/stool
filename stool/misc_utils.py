@@ -5,6 +5,7 @@ import logging
 import os
 import sys
 import warnings
+from datetime import datetime, timedelta
 
 import requests
 
@@ -94,3 +95,71 @@ def deep_get(dictionary, keys, default=None):
         return dictionary if None != dictionary else default
 
     return default
+
+
+# custom_json_encoder.py
+
+
+class CustomJSONEncoder(json.JSONEncoder):
+    """
+    A customizable JSON encoder that formats floats, datetimes, and timedeltas.
+
+    Formatting:
+    - Floats are rounded to two decimal places.
+    - Datetimes are formatted as "YYYY-MM-DD HH:MM:SS".
+    - Timedeltas are formatted as "hh:mm:ss.SSS" where:
+        - hh can exceed 24 to represent total hours.
+        - mm represents minutes.
+        - ss represents seconds.
+        - SSS represents milliseconds.
+    """
+
+    float_format = '.2f'  # Default: 2 decimal places
+    datetime_format = "%Y-%m-%d %H:%M:%S"  # Default datetime format
+    timedelta_format = "hh:mm:ss.SSS"  # Default timedelta format
+
+    def default(self, obj):
+        if isinstance(obj, float):
+            # Round float to two decimal places
+            return round(obj, 2)
+        elif isinstance(obj, datetime):
+            # Format datetime using the specified format
+            return obj.strftime(self.datetime_format)
+        elif isinstance(obj, timedelta):
+            # Format timedelta to "hh:mm:ss.SSS"
+            total_seconds = obj.total_seconds()
+            is_negative = total_seconds < 0
+            total_seconds = abs(total_seconds)
+
+            hours = int(total_seconds // 3600)
+            minutes = int((total_seconds % 3600) // 60)
+            seconds = int(total_seconds % 60)
+            milliseconds = int(round((total_seconds - int(total_seconds)) * 1000))
+
+            formatted_timedelta = f"{hours:02}:{minutes:02}:{seconds:02}.{milliseconds:03}"
+
+            if is_negative:
+                formatted_timedelta = f"-{formatted_timedelta}"
+
+            return formatted_timedelta
+        return super().default(obj)
+
+if __name__ == '__main__':
+    data = {
+        'price': 123.456789,
+        'timestamp': datetime(2024, 10, 19, 16, 45, 30),
+        'duration': timedelta(hours=12, minutes=31, seconds=45, microseconds=123000),
+        'description': 'Sample product',
+        'metrics': {
+            'accuracy': 0.987654321,
+            'last_updated': datetime.now(),
+        },
+        'values': [1.2345, 6.7890, 3.14159],
+        'short_duration': timedelta(minutes=12, seconds=31),
+        'long_duration': timedelta(hours=123, minutes=12, seconds=1),
+        'negative_duration': -timedelta(hours=1, minutes=45, seconds=30, microseconds=456000),
+    }
+
+    # Serialize data using the CustomJSONEncoder
+    json_str = json.dumps(data, cls=CustomJSONEncoder, indent=2)
+    print(json_str)
