@@ -16,6 +16,7 @@ def split_into_months(start_date, end_date):
     return generate_time_ranges(start_date, end_date, 'monthly')
 
 
+
 def generate_time_ranges(start_date, end_date, interval='monthly'):
     """Generates time ranges based on a given interval.
 

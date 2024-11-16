@@ -103,7 +103,7 @@ class Counter(dict):
 
     def to_str(self, width=40, title=''):
         if not self:
-            return
+            return ""
         if width < 23:
             width = 23
 
