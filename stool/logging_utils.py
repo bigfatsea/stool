@@ -83,7 +83,7 @@ def get_colored_logger(name='root', level=logging.INFO):
     logger = logging.getLogger(name)
     if not logger.handlers:
         logger.setLevel(level)
-        fmt = "%(log_color)s%(asctime)s %(levelname)s - [%(threadName)s] - %(message)s"
+        fmt = "%(log_color)s%(asctime)s %(levelname)s - [%(name)s] - %(message)s"
         formatter = _ThreadColorFormatter(fmt=fmt, reset=True)
         handler = colorlog.StreamHandler()
         handler.setFormatter(formatter)
