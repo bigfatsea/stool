@@ -70,7 +70,7 @@ def print_progress(value: int = None, total_value: int = None, step: int = 10):
     if value is None or step < 0:
         return
     str_total = f'/{total_value:,}' if total_value else ''
-    len_total = max(len(str(total_value)), 6)
+    len_total = max(len(str_total), 6)
     if value % (step * 100) == 0:
         print(f'+ {value:>{len_total},}{str_total} @ {time.strftime("%H:%M:%S")}', flush=True)
     elif value % (step * 50) == 0:
