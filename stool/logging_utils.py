@@ -1,12 +1,14 @@
 import logging
-import threading
-import colorlog
-import time
 import os
 import sys
+import threading
+import time
 
+
+import colorlog
 from colorama import Fore
-from .misc_utils import deprecated
+
+from stool.misc_utils import deprecated
 
 # Thread-specific colors
 # _THREAD_COLORS = [34, 36, 32, 33, 31, 35]
@@ -165,6 +167,20 @@ class Counter(dict):
             with self.lock:
                 self.last_progress_call = time.time()
 
+    def print_progress(self, key=None, step: int = 10):
+        if not key or step < 1:
+            return
+
+        v = self.get(key, 0)
+        if v % (step * 100) == 0:
+            print(f'+ {v:>6,} @ {time.strftime("%H:%M:%S")}', flush=True)
+        elif v % (step * 50) == 0:
+            print('+', end='', flush=True)
+        elif v % (step * 10) == 0:
+            print(':', end='', flush=True)
+        elif v % step == 0:
+            print('.', end='', flush=True)
+
 
 if __name__ == "__main__":
     print_cmd()
@@ -177,3 +193,9 @@ if __name__ == "__main__":
         xx = ''.join(filter(str.isdigit, tn.split('-')[-1]))
 
         print(xx)
+
+    c = Counter()
+    for i in range(2000):
+        c.inc('total')
+        c.print_progress('total')
+        time.sleep(0.001)
