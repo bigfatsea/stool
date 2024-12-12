@@ -4,7 +4,6 @@ import sys
 import threading
 import time
 
-
 import colorlog
 from colorama import Fore
 
@@ -167,11 +166,11 @@ class Counter(dict):
             with self.lock:
                 self.last_progress_call = time.time()
 
-    def print_progress(self, key=None, step: int = 10):
+    def inc_and_progress(self, key=None, value=1, step: int = 10):
         if not key or step < 1:
             return
 
-        v = self.get(key, 0)
+        v = self.inc(key, value)
         if v % (step * 100) == 0:
             print(f'+ {v:>6,} @ {time.strftime("%H:%M:%S")}', flush=True)
         elif v % (step * 50) == 0:
