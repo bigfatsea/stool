@@ -66,6 +66,21 @@ def print_and_return(obj, *args, **kwargs):
     return obj
 
 
+def print_progress(value: int = None, total_value: int = None, step: int = 10):
+    if value is None or step < 0:
+        return
+    str_total = f'/{total_value:,}' if total_value else ''
+    len_total = max(len(str(total_value)), 6)
+    if value % (step * 100) == 0:
+        print(f'+ {value:>{len_total},}{str_total} @ {time.strftime("%H:%M:%S")}', flush=True)
+    elif value % (step * 50) == 0:
+        print('+', end='', flush=True)
+    elif value % (step * 10) == 0:
+        print(':', end='', flush=True)
+    elif value % step == 0:
+        print('.', end='', flush=True)
+
+
 class _ThreadColorFormatter(colorlog.ColoredFormatter):
     def format(self, record):
         record.msg = f"{_get_thread_color()}{record.msg}{_RESET_COLOR}"
@@ -165,20 +180,6 @@ class Counter(dict):
             printc(self, flush=True)
             with self.lock:
                 self.last_progress_call = time.time()
-
-    def inc_and_progress(self, key=None, value=1, step: int = 10):
-        if not key or step < 1:
-            return
-
-        v = self.inc(key, value)
-        if v % (step * 100) == 0:
-            print(f'+ {v:>6,} @ {time.strftime("%H:%M:%S")}', flush=True)
-        elif v % (step * 50) == 0:
-            print('+', end='', flush=True)
-        elif v % (step * 10) == 0:
-            print(':', end='', flush=True)
-        elif v % step == 0:
-            print('.', end='', flush=True)
 
 
 if __name__ == "__main__":
