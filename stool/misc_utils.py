@@ -86,6 +86,10 @@ def exclude_keyword(data: Dict, excluded_keyword: str) -> Dict:
 def exclude_keys(data: Dict, excluded_keys: List) -> Dict:
     return {k: v for k, v in data.items() if k not in excluded_keys} if excluded_keys else data
 
+def reserve_keyword(data: Dict, reserved_keyword: str) -> Dict:
+    return {k: v for k, v in data.items() if reserved_keyword in k} if reserved_keyword else data
+def reserve_keys(data: Dict, reserved_keys: List) -> Dict:
+    return {k: v for k, v in data.items() if k in reserved_keys} if reserved_keys else data
 
 def deep_get(dictionary, keys, default=None):
     if not dictionary:
