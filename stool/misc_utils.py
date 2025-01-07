@@ -6,8 +6,8 @@ import os
 import requests
 import sys
 import warnings
-from typing import Dict, List
 from datetime import datetime, timedelta
+from typing import Dict, List
 
 
 def deprecated(reason=''):
@@ -79,17 +79,31 @@ def del_by_size(directory, ext='.html', min_size=3 * 1024):
     return total, total_size, deleted, deleted_size
 
 
-def exclude_keyword(data: Dict, excluded_keyword: str) -> Dict:
-    return {k: v for k, v in data.items() if excluded_keyword not in k} if excluded_keyword else data
+def exclude_keyword(data: Dict, excluded_keyword: str, mask=None) -> Dict:
+    if not excluded_keyword:
+        return data
+    if mask:
+        return {k: (v if excluded_keyword not in k else mask) for k, v in data.items()}
+    else:
+        return {k: v for k, v in data.items() if excluded_keyword not in k}
 
 
-def exclude_keys(data: Dict, excluded_keys: List) -> Dict:
-    return {k: v for k, v in data.items() if k not in excluded_keys} if excluded_keys else data
+def exclude_keys(data: Dict, excluded_keys: List, mask=None) -> Dict:
+    if not excluded_keys:
+        return data
+    if mask:
+        return {k: (v if k not in excluded_keys else mask) for k, v in data.items()}
+    else:
+        return {k: v for k, v in data.items() if k not in excluded_keys}
+
 
 def reserve_keyword(data: Dict, reserved_keyword: str) -> Dict:
     return {k: v for k, v in data.items() if reserved_keyword in k} if reserved_keyword else data
+
+
 def reserve_keys(data: Dict, reserved_keys: List) -> Dict:
     return {k: v for k, v in data.items() if k in reserved_keys} if reserved_keys else data
+
 
 def deep_get(dictionary, keys, default=None):
     if not dictionary:
