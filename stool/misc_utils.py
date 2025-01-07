@@ -78,6 +78,10 @@ def del_by_size(directory, ext='.html', min_size=3 * 1024):
     return total, total_size, deleted, deleted_size
 
 
+def exclude_keyword(data: Dict, excluded_keyword: str) -> Dict:
+    return {k: v for k, v in data.items() if excluded_keyword not in k} if excluded_keyword else data
+
+
 def exclude_keys(data: Dict, excluded_keys: List) -> Dict:
     return {k: v for k, v in data.items() if k not in excluded_keys} if excluded_keys else data
 
