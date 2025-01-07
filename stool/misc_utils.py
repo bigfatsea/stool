@@ -6,6 +6,7 @@ import os
 import requests
 import sys
 import warnings
+from typing import Dict, List
 from datetime import datetime, timedelta
 
 
