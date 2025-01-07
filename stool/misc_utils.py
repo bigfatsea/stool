@@ -3,11 +3,10 @@ import hashlib
 import json
 import logging
 import os
+import requests
 import sys
 import warnings
 from datetime import datetime, timedelta
-
-import requests
 
 
 def deprecated(reason=''):
@@ -79,6 +78,10 @@ def del_by_size(directory, ext='.html', min_size=3 * 1024):
     return total, total_size, deleted, deleted_size
 
 
+def exclude_keys(data: Dict, excluded_keys: List) -> Dict:
+    return {k: v for k, v in data.items() if k not in excluded_keys} if excluded_keys else data
+
+
 def deep_get(dictionary, keys, default=None):
     if not dictionary:
         return default
@@ -143,6 +146,7 @@ class CustomJSONEncoder(json.JSONEncoder):
 
             return formatted_timedelta
         return super().default(obj)
+
 
 if __name__ == '__main__':
     data = {
