@@ -10,6 +10,7 @@ from datetime import datetime, timedelta
 from typing import Dict, List
 
 
+
 def deprecated(reason=''):
     def decorator(func):
         @functools.wraps(func)
@@ -124,6 +125,55 @@ def deep_get(dictionary, keys, default=None):
 
 
 # custom_json_encoder.py
+
+class DateTimeEncoder(json.JSONEncoder):
+    """Singleton JSON encoder that handles datetime objects."""
+    _instance = None
+
+    def __new__(cls, *args, **kwargs):
+        if cls._instance is None:
+            cls._instance = super().__new__(cls)
+        return cls._instance
+
+    def default(self, obj):
+        if isinstance(obj, datetime):
+            return obj.isoformat()
+        return super().default(obj)
+
+
+class DateTimeDecoder(json.JSONDecoder):
+    """Singleton JSON decoder that converts ISO format datetime strings back to datetime objects."""
+    _instance = None
+
+    def __new__(cls, *args, **kwargs):
+        if cls._instance is None:
+            cls._instance = super().__new__(cls)
+        return cls._instance
+
+    def __init__(self, *args, **kwargs):
+        if not hasattr(self, '_initialized'):
+            super().__init__(object_hook=self._decode_datetime, *args, **kwargs)
+            self._initialized = True
+
+    @staticmethod
+    def _decode_datetime(obj):
+        for key, value in obj.items():
+            if isinstance(value, str):
+                try:
+                    obj[key] = datetime.fromisoformat(value)
+                except ValueError:
+                    pass  # Not a datetime string
+        return obj
+
+
+def to_json(data, indent=2):
+    """Convert data to JSON string with datetime support."""
+    return json.dumps(data, cls=DateTimeEncoder, indent=indent, ensure_ascii=False)
+
+
+def from_json(json_str):
+    """Parse JSON string to Python object with datetime support."""
+    return json.loads(json_str, cls=DateTimeDecoder, encoding='utf-8')
 
 
 class CustomJSONEncoder(json.JSONEncoder):
