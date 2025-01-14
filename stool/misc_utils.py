@@ -155,8 +155,7 @@ class DateTimeDecoder(json.JSONDecoder):
             super().__init__(object_hook=self._decode_datetime, *args, **kwargs)
             self._initialized = True
 
-    @staticmethod
-    def _decode_datetime(obj):
+    def _decode_datetime(self, obj):
         for key, value in obj.items():
             if isinstance(value, str):
                 try:
@@ -173,7 +172,7 @@ def to_json(data, indent=2):
 
 def from_json(json_str):
     """Parse JSON string to Python object with datetime support."""
-    return json.loads(json_str, cls=DateTimeDecoder, encoding='utf-8')
+    return json.loads(json_str, cls=DateTimeDecoder)
 
 
 class CustomJSONEncoder(json.JSONEncoder):
@@ -240,3 +239,27 @@ if __name__ == '__main__':
     # Serialize data using the CustomJSONEncoder
     json_str = json.dumps(data, cls=CustomJSONEncoder, indent=2)
     print(json_str)
+    from zoneinfo import ZoneInfo
+    utc_dt = datetime(2024, 10, 27, 10, 30, 0, tzinfo=ZoneInfo("UTC"))
+    eastern_dt = utc_dt.astimezone(ZoneInfo("US/Eastern"))
+    china_dt = utc_dt.astimezone(ZoneInfo('Asia/Shanghai'))
+
+    data = {
+        "name": "Example",
+        "utc_time": utc_dt,
+        "eastern_time": eastern_dt,
+        "china_dt": china_dt
+    }
+
+    # 使用新的 to_json 函数
+    json_str = to_json(data)
+    print('dumps: ', json_str)
+
+    # 使用新的 from_json 函数
+    parsed_data = from_json(json_str)
+    print('loads: ', '\n\t'.join([f'{k}: {v}' for k, v in parsed_data.items()]))
+    print('\n')
+    print(type(parsed_data["china_dt"]))  # <class 'datetime.datetime'>
+    print(parsed_data["china_dt"].tzinfo)  # UTC
+
+
