@@ -83,3 +83,58 @@ def generate_time_ranges(start_date, end_date, interval='monthly'):
             start = current_end + timedelta(days=1)
 
     return ranges
+
+
+from dateutil import parser as dateutil_parser
+import pytz
+from datetime import datetime, timezone, timedelta
+import logging
+
+def tz_it(d, tz=None):
+    """
+    Convert datetime to specified timezone
+    Args:
+        d: datetime object
+        tz: timezone string (e.g., 'UTC', 'Asia/Shanghai')
+    Returns:
+        datetime object with specified timezone
+    """
+    if not d:
+        return d
+
+    if not isinstance(d, datetime):
+        raise TypeError(f"Expected datetime object, got {type(d)}")
+
+    tzz = timezone.utc
+    if isinstance(tz, str):
+        try:
+            tzz = pytz.timezone(tz)
+        except Exception as e:
+            logging.exception(f"Failed to get timezone {tz}: {e}")
+
+    # Ensure datetime has tzinfo
+    if d.tzinfo is None:
+        d = d.replace(tzinfo=timezone.utc)
+
+    return d.astimezone(tzz)
+
+
+def parse_date(date_str, date_format=None):
+    """解析日期字符串为 datetime 对象"""
+    if not date_str:
+        return None
+
+    if date_format:
+        try:
+            date_obj = datetime.strptime(date_str, date_format)
+            return tz_it(date_obj)
+        except Exception as e:
+            logging.warning(f"Failed to parse date string {date_str} with format {date_format}: {e}")
+
+    try:
+        date_obj = dateutil_parser.parse(date_str)
+        return tz_it(date_obj)
+    except Exception as e:
+        logging.exception(f"Failed to parse date string {date_str}: {e}")
+
+    return None
