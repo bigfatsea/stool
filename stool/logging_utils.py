@@ -107,7 +107,7 @@ def get_colored_logger(name='root', level=logging.INFO):
     return logger
 
 
-class Counter(dict):
+class Counter(dict[str, int]):
     def __init__(self, *args, **kwargs):
         super(Counter, self).__init__(*args, **kwargs)
         self.timestamp = time.time()
@@ -140,24 +140,29 @@ class Counter(dict):
         et = 'Escaped: ' + sec2str_hms(time.time() - self.timestamp)
         return f"\n+ {dt:-^{width - 4}} +\n{s}\n+ {et:-^{width - 4}} +\n"
 
-    def set(self, key, value=0):
+    def get(self, key: str, default: int = 0) -> int:
+        """Get value for key, with a default of 0 if not found."""
+        with self.lock:
+            return super().get(key, default)
+
+    def set(self, key: str, value: int = 0) -> int:
         with self.lock:
             self[key] = value
             return self[key]
 
-    def inc(self, key, value=1):
+    def inc(self, key: str, value: int = 1) -> int:
         with self.lock:
             self[key] = self.get(key, 0) + value
             return self[key]
 
     @deprecated('use inc() instead')
-    def incr(self, key, value=1):
+    def incr(self, key: str, value: int = 1) -> int:
         with self.lock:
             self[key] = self.get(key, 0) + value
             return self[key]
 
     @deprecated('use inc() instead')
-    def increment(self, key, value=1):
+    def increment(self, key: str, value: int = 1) -> int:
         with self.lock:
             self[key] = self.get(key, 0) + value
             return self[key]
@@ -167,7 +172,7 @@ class Counter(dict):
             self.clear()
             self.timestamp = time.time()
 
-    def log_progress(self, key=None, modulus=1, interval=300):
+    def log_progress(self, key: str = None, modulus: int = 1, interval: int = 300):
         if not self:
             return
         modulus = max(1, modulus) if modulus else 1
