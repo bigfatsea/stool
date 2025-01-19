@@ -142,8 +142,7 @@ class Counter(dict[str, int]):
 
     def get(self, key: str, default: int = 0) -> int:
         """Get value for key, with a default of 0 if not found."""
-        with self.lock:
-            return super().get(key, default)
+        return super().get(key, default)
 
     def set(self, key: str, value: int = 0) -> int:
         with self.lock:
