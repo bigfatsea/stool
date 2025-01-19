@@ -17,11 +17,11 @@ CAT_SERVICE_STATUS = 'service_status'
 
 class StatusMonitor:
 
-    def __init__(self, uri=None):
+    def __init__(self, uri=None, switch=False):
         if not uri:
             raise ValueError('Missing MongoDB URI')
         self.mdb = pymongo.MongoClient(uri)
-
+        self.switch = switch
         self.start_timestamp = datetime.now().timestamp()
         self.status_id = ObjectId()
         self.stats_id = ObjectId()
@@ -31,6 +31,9 @@ class StatusMonitor:
         return ObjectId()
 
     def delete(self, id=None, category=None, start=None, end=None, collection_name=_COLLECTION_NAME, db_name=_DB_NAME):
+        if not self.switch:
+            return
+
         delete_condition = {}
         if end:
             try:
@@ -65,7 +68,7 @@ class StatusMonitor:
             _logger.info('No condition specified for deletion.\n')
 
     def save(self, category, data, id=None, collection_name=_COLLECTION_NAME, db_name=_DB_NAME):
-        if not category or not data:
+        if not self.switch or not category or not data:
             return
 
         # _logger.info(f'Saving status/stats for {category}.')
@@ -82,7 +85,7 @@ class StatusMonitor:
 
     def save_status(self, service_name, status='running', id=None, start_timestamp=None,
                     collection_name=_COLLECTION_NAME, db_name=_DB_NAME):
-        if not service_name or not status:
+        if not self.switch or not service_name or not status:
             return
 
         if not start_timestamp:
